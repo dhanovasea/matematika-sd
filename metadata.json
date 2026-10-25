@@ -1,0 +1,6 @@
+{
+  "name": "Math Adventure 100",
+  "description": "Aplikasi Media Pembelajaran Interaktif Penjumlahan dan Pengurangan 1–100 untuk Anak SD dengan Petualangan Belajar, Akademi Berhitung, Mini-Game, dan Bank Soal Lengkap.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
