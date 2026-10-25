@@ -98,9 +98,46 @@ export interface AppSettings {
   animationSpeed: 'normal' | 'fast';
 }
 
+export interface VideoTrickScene {
+  title: string;
+  speakerText: string;
+  mascotMood: 'happy' | 'cheering' | 'thinking' | 'proud' | 'encouraging';
+  boardContent: {
+    heading: string;
+    formula?: string;
+    highlightText?: string;
+    steps?: string[];
+    visualType?: 'number_line' | 'ten_frame' | 'stacked' | 'cards' | 'decompose';
+    visualData?: Record<string, unknown>;
+  };
+  durationSeconds: number;
+}
+
+export interface VideoTrick {
+  id: string;
+  title: string;
+  subtitle: string;
+  category: QuestionCategory;
+  trickKey: string;
+  thumbnailEmoji: string;
+  durationLabel: string;
+  tags: string[];
+  description: string;
+  scenes: VideoTrickScene[];
+  practiceQuiz: {
+    question: string;
+    num1: number;
+    num2: number;
+    answer: number;
+    options: number[];
+    explanation: string;
+  };
+}
+
 export type MainTab =
   | 'adventure'
   | 'academy'
+  | 'videos'
   | 'practice'
   | 'minigames'
   | 'daily'

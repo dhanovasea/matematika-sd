@@ -19,6 +19,7 @@ import { ExamView } from './components/exam/ExamView';
 import { BadgesView } from './components/badges/BadgesView';
 import { ProgressParentPanel } from './components/progress/ProgressParentPanel';
 import { SettingsView } from './components/settings/SettingsView';
+import { VideoTricksHub } from './components/videos/VideoTricksHub';
 import { MikoMascot } from './components/mascot/MikoMascot';
 
 export default function App() {
@@ -241,6 +242,7 @@ export default function App() {
   const navigationTabs = [
     { id: 'adventure' as MainTab, label: 'Petualangan Belajar', short: 'Petualangan', icon: '🗺️' },
     { id: 'academy' as MainTab, label: 'Akademi Berhitung', short: 'Akademi', icon: '📖' },
+    { id: 'videos' as MainTab, label: 'Video Trik Belajar', short: 'Video Trik', icon: '🎬' },
     { id: 'practice' as MainTab, label: 'Latihan Soal', short: 'Latihan', icon: '✏️' },
     { id: 'minigames' as MainTab, label: 'Mini-Game Matematika', short: 'Game', icon: '🎮' },
     { id: 'daily' as MainTab, label: 'Tantangan Harian', short: 'Harian', icon: '🔥' },
@@ -378,6 +380,17 @@ export default function App() {
               if (catId) setPracticeCategory(catId as QuestionCategory);
               setActiveTab('practice');
             }}
+            onNavigateToVideos={() => setActiveTab('videos')}
+          />
+        )}
+
+        {activeTab === 'videos' && (
+          <VideoTricksHub
+            onEarnReward={handleEarnReward}
+            onNavigateToPractice={(catId) => {
+              if (catId) setPracticeCategory(catId as QuestionCategory);
+              setActiveTab('practice');
+            }}
           />
         )}
 
@@ -463,10 +476,13 @@ export default function App() {
         <button
           onClick={() => {
             sound.playClick();
-            setActiveTab(activeTab === 'progress' ? 'settings' : activeTab === 'exam' ? 'badges' : 'exam');
+            const overflowTabs: MainTab[] = ['daily', 'exam', 'badges', 'progress', 'settings'];
+            const curIdx = overflowTabs.indexOf(activeTab);
+            const nextTab = curIdx >= 0 && curIdx + 1 < overflowTabs.length ? overflowTabs[curIdx + 1] : overflowTabs[0];
+            setActiveTab(nextTab);
           }}
           className={`flex flex-col items-center py-1 px-2 rounded-xl transition-transform active:scale-90 ${
-            ['exam', 'badges', 'progress', 'settings'].includes(activeTab)
+            ['daily', 'exam', 'badges', 'progress', 'settings'].includes(activeTab)
               ? 'text-amber-600 font-black'
               : 'text-slate-500 font-medium'
           }`}

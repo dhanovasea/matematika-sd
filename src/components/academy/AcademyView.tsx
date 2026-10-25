@@ -13,12 +13,14 @@ interface AcademyViewProps {
   completedLessons: string[];
   onCompleteLesson: (slug: string, xpEarned: number) => void;
   onNavigateToPractice: (categoryId?: string) => void;
+  onNavigateToVideos?: () => void;
 }
 
 export const AcademyView: React.FC<AcademyViewProps> = ({
   completedLessons,
   onCompleteLesson,
-  onNavigateToPractice
+  onNavigateToPractice,
+  onNavigateToVideos
 }) => {
   const [selectedLevelId, setSelectedLevelId] = useState<number>(1);
   const [activeTab, setActiveTab] = useState<'learn' | 'demo' | 'tricks' | 'quiz'>('learn');
@@ -85,10 +87,18 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
             <p className="text-slate-600 text-sm font-medium mt-1">{currentLevel.subtitle}</p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            {onNavigateToVideos && (
+              <button
+                onClick={() => onNavigateToVideos()}
+                className="bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs md:text-sm px-4 py-2.5 rounded-2xl shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>🎬 Video Trik</span>
+              </button>
+            )}
             <button
               onClick={() => onNavigateToPractice()}
-              className="bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs md:text-sm px-4 py-2.5 rounded-2xl border border-amber-300 transition-colors"
+              className="bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs md:text-sm px-4 py-2.5 rounded-2xl border border-amber-300 transition-colors cursor-pointer"
             >
               Latihan Soal Materi Ini ➔
             </button>

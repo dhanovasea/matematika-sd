@@ -8,6 +8,9 @@ import { MikoMascot } from '../mascot/MikoMascot';
 import { NumberLineVisualizer } from '../visualizers/NumberLineVisualizer';
 import { TenFrameVisualizer } from '../visualizers/TenFrameVisualizer';
 import { ConcreteCounter } from '../visualizers/ConcreteCounter';
+import { VIDEO_TRICKS } from '../../data/videoTricks';
+import { InteractiveVideoPlayer } from '../videos/InteractiveVideoPlayer';
+import { VideoTrick } from '../../types/math';
 
 interface PracticeViewProps {
   initialCategory?: QuestionCategory;
@@ -52,6 +55,31 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [sessionWrongIds, setSessionWrongIds] = useState<string[]>([]);
   const [sessionResolvedIds, setSessionResolvedIds] = useState<string[]>([]);
+  const [activeVideoTrick, setActiveVideoTrick] = useState<VideoTrick | null>(null);
+
+  const getMatchingVideo = (q: Question): VideoTrick => {
+    if (q.num2 === 9 || q.num1 === 9) {
+      return q.operation === 'addition'
+        ? VIDEO_TRICKS.find(v => v.id === 'vid-plus-9') || VIDEO_TRICKS[0]
+        : VIDEO_TRICKS.find(v => v.id === 'vid-minus-9') || VIDEO_TRICKS[0];
+    }
+    if (q.num2 === 11 || q.num1 === 11) {
+      return VIDEO_TRICKS.find(v => v.id === 'vid-magic-11') || VIDEO_TRICKS[0];
+    }
+    if (q.answer === 100 || q.num1 === 100) {
+      return VIDEO_TRICKS.find(v => v.id === 'vid-pair-100') || VIDEO_TRICKS[0];
+    }
+    if (q.category === 'make_ten') {
+      return VIDEO_TRICKS.find(v => v.id === 'vid-make-ten') || VIDEO_TRICKS[0];
+    }
+    if (q.category === 'carry_borrow') {
+      return VIDEO_TRICKS.find(v => v.id === 'vid-stacked-carry') || VIDEO_TRICKS[0];
+    }
+    if (q.category === 'tens_decompose') {
+      return VIDEO_TRICKS.find(v => v.id === 'vid-decompose-tens') || VIDEO_TRICKS[0];
+    }
+    return VIDEO_TRICKS.find(v => v.id === 'vid-round-tens') || VIDEO_TRICKS[0];
+  };
 
   // Timer effect
   useEffect(() => {
@@ -414,10 +442,22 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
       {/* Main Question Card */}
       <div className="bg-white rounded-3xl border-2 border-amber-200 p-6 md:p-8 shadow-sm space-y-6">
-        <div className="flex justify-between items-center text-xs">
-          <span className="font-bold text-amber-800 bg-amber-100 px-3 py-1 rounded-full uppercase tracking-wider">
-            {currentQ.recommendedMethod}
-          </span>
+        <div className="flex flex-wrap justify-between items-center gap-2 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-amber-800 bg-amber-100 px-3 py-1 rounded-full uppercase tracking-wider">
+              {currentQ.recommendedMethod}
+            </span>
+            <button
+              onClick={() => {
+                sound.playClick();
+                setActiveVideoTrick(getMatchingVideo(currentQ));
+              }}
+              className="flex items-center gap-1.5 bg-rose-500 hover:bg-rose-600 text-white font-black px-3 py-1 rounded-full text-xs shadow-xs transition-transform active:scale-95 cursor-pointer"
+              title="Lihat video animasi cara cepat menyelesaikan soal ini"
+            >
+              <span>🎬 Tonton Video Trik</span>
+            </button>
+          </div>
           <span className="text-slate-400 font-medium">ID: {currentQ.id}</span>
         </div>
 
@@ -566,6 +606,17 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Video Trick Popup Modal */}
+      {activeVideoTrick && (
+        <InteractiveVideoPlayer
+          video={activeVideoTrick}
+          onClose={() => setActiveVideoTrick(null)}
+          onEarnReward={(xp, stars) => {
+            sound.playStar();
+          }}
+        />
+      )}
     </div>
   );
 };
